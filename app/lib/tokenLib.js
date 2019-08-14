@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const shortid = require('shortid')
-const secretKey = 'someVeryRandomStringThatNobodyCanGuess';
+const secretKey = 'NeverUnderestimateAManWhoKnowsHowToOverestimateHimself';
 
 
 let generateToken = (data, cb) => {
@@ -31,12 +31,12 @@ let verifyClaim = (token, secretKey, cb) => {
     // verify a token symmetric
     jwt.verify(token, secretKey, function (err, decoded) {
         if (err) {
-            console.log("error while verifying token");
+            console.log("Error while verifying token");
             console.log(err);
             cb(err, null)
         }
         else {
-            console.log("user verified");
+            console.log("User verified");
             console.log(decoded);
             cb(null, decoded);
         }
@@ -47,20 +47,17 @@ let verifyClaimWithoutSecret = (token, cb) => {
     // verify a token symmetric
     jwt.verify(token, secretKey, function (err, decoded) {
         if (err) {
-            console.log("error while verify token");
+            console.log("Error while verifying token");
             console.log(err);
-            cb(err, data)
+            cb(err, null)
         }
         else {
-            console.log("user verified");
+            console.log("User verified");
+           // console.log(decoded);
             cb(null, decoded)
         }
     });
-
-
 }// end verify claim 
-
-
 
 
 module.exports = {

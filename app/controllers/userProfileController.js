@@ -427,7 +427,6 @@ let resetPassword = (req, res) => {
             let hashPassword = bcryptLib.hashPassword(req.body.password);
             UserModel.findOneAndUpdate({ userId: req.params.userId }, { password: hashPassword }, (err, details) => {
                 console.log(req.params.userId)
-                console.log(req.body.password)
                 if (err) {
                     console.log(err);
                     let apiResponse = Response.generate(true, 'Some internal error occurred!!', 500, err);
@@ -451,36 +450,27 @@ let resetPassword = (req, res) => {
  * auth params: userId.
  */
 let logout = (req, res) => {
-    AuthModel.findOneAndRemove({userId: req.user.userId}, (err, result) => {
-      if (err) {
-          console.log(err)
-          logger.error(err.message, 'user Controller: logout', 10)
-          let apiResponse = Response.generate(true, `error occurred: ${err.message}`, 500, null)
-          res.send(apiResponse)
-      } else if (util.isEmpty(result)) {
-          let apiResponse = Response.generate(true, 'Already Logged Out or Invalid UserId', 404, null)
-          res.send(apiResponse)
-      } else {
-          let apiResponse = Response.generate(false, 'Logged Out Successfully', 200, null)
-          res.send(apiResponse)
-      }
+    AuthModel.findOneAndRemove({ userId: req.user.userId }, (err, result) => {
+        if (err) {
+            console.log(err)
+            logger.error(err.message, 'userProfileController: logout', 10)
+            let apiResponse = Response.generate(true, `error occurred: ${err.message}`, 500, null)
+            res.send(apiResponse)
+        } else if (util.isEmpty(result)) {
+            let apiResponse = Response.generate(true, 'Already Logged Out or Invalid UserId', 404, null)
+            res.send(apiResponse)
+        } else {
+            let apiResponse = Response.generate(false, 'Logged Out Successfully', 200, null)
+            res.send(apiResponse)
+        }
     })
-  } // end of the logout function.
+} // end of the logout function.
 
-
-let deleteAccount = (req, res) => {
-    UserModel.deleteOne({ userId: req.params.userId }, (err) => {
-        console.log(err);
-        let apiResponse = Response.generate(true, 'Deletion Failed!!', 500, err);
-        res.send(apiResponse);
-    });
-}
 
 module.exports = {
     signup: signup,
     login: login,
     logout: logout,
     forgotPassword: forgotPassword,
-    resetPassword: resetPassword,
-    deleteAccount: deleteAccount,
+    resetPassword: resetPassword
 }

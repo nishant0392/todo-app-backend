@@ -5,13 +5,8 @@ const fs = require('fs')
 const logger = require('./app/lib/loggerLib')
 const bodyParser = require('body-parser')
 const globalErrorMiddleware = require('./app/middlewares/appErrorHandler')
-
-// creating database connection
-const mongoose = require('mongoose');
-mongoose.connect(appConfig.db.uri, { useNewUrlParser: true, useCreateIndex: true });
-
-// App listening on port 3000
-app.listen(appConfig.port, () => console.log(`App listening on port ${appConfig.port}!`))
+const http = require('http')
+const mongoose = require('mongoose')
 
 // middlewares
 app.use(bodyParser.json());
@@ -24,9 +19,10 @@ const models_path = './app/models';
 const routes_path = './app/routes';
 
 app.all('*', function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+  res.header('Access-Control-Allow-Credentials', true);
   next();
 });
 
@@ -46,6 +42,43 @@ fs.readdirSync(routes_path).forEach(function (file) {
 
 // Calling global 404 handler after route
 app.use(globalErrorMiddleware.globalNotFoundHandler)
+
+/**
+ * Create HTTP server.
+ */
+const HTTP_Server = http.createServer(app);
+HTTP_Server.listen(appConfig.port);
+HTTP_Server.on('error', errorHandler);
+HTTP_Server.on('listening', listeningEventHandler);
+
+// Socket IO connection handler 
+const socketLib = require("./app/lib/socketLib");
+socketLib.set_http_server(HTTP_Server);
+
+
+function errorHandler(err) {
+  console.log(err)
+  if (err.code === "EADDRINUSE") {
+    logger.error(err.code + ":Port is already in use", "App.js: errorHandler", 10);
+    process.exit(1);
+  }
+  else if (err.code === "EACCESS") {
+    logger.error(err.code + ":Elevated privileges required", "App.js: errorHandler", 10);
+    process.exit(1);
+  }
+  else {
+    logger.error(err.code + ":Some Unknown Error occurred while creating HTTP Server", "App.js: errorHandler", 10);
+    process.exit(1);
+  }
+} // END errorHandler()
+
+function listeningEventHandler() {
+  var addr = HTTP_Server.address();
+  logger.info('HTTP Server listening on port ' + addr.port, 'App.js: listeningEventHandler', 10);
+
+  // Creating Database connection
+  mongoose.connect(appConfig.db.uri, { useNewUrlParser: true, useCreateIndex: true });
+}
 
 
 /**
@@ -68,4 +101,3 @@ mongoose.connection.on('open', function (err) {
       'database connection open handler', 10)
   }
 }); // end mongoose connection open handler
-
