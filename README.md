@@ -3,7 +3,8 @@ TODO Web Application with Real-Time Functionalities for Multi-Users
 
 
 Technologies used:
-  MongoDB, Express & Node.js along with SOCKET.IO for real-time functionalities..
+ 1. MongoDB, Express & Node.js 
+ 2. SOCKET.IO for real-time functionalities.
 
 Features:
 1. User can create a list in a tree-like structure, as in a filesystem and can have
