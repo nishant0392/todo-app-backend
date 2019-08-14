@@ -3,9 +3,7 @@ TODO Web Application with Real-Time Functionalities for Multi-Users
 
 
 Technologies used:
-1. MEAN stack (MongoDB, Express, Angular 8 & Node.js) along with
-SOCKET.IO for real-time functionalities.
-2. Bootstrap for responsive design.
+  MongoDB, Express & Node.js along with SOCKET.IO for real-time functionalities..
 
 Features:
 1. User can create a list in a tree-like structure, as in a filesystem and can have
