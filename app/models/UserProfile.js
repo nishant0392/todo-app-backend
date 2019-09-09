@@ -26,11 +26,15 @@ let userSchema = new Schema({
     },
     email: {
         type: String,
-        default: ''
+        required: true
     },
     password: {
         type: String,
-        default: 'nishant'
+        required: true
+    },
+    avatarPath: {
+        type: String,
+        default: ''
     },
     createdOn: {
         type: Date,

@@ -381,7 +381,7 @@ let forgotPassword = (req, res) => {
                      password by clicking the button below.</p>
                     <span style="background-color: indianred; border: none; padding: 10px 25px;
                           text-align: center; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 5px; ">
-                    <a style="text-decoration:none; color:white;" href="http://localhost:4200/reset-password/${userDetails.userId}/${responseBody.authToken}" target="_blank">Reset Password</a></span>
+                    <a style="text-decoration:none; color:white;" href="http://nishant-kumar.com/reset-password/${userDetails.userId}/${responseBody.authToken}" target="_blank">Reset Password</a></span>
                     </div>`
                     };
                     SendEmail(emailOptions);

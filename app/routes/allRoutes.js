@@ -3,6 +3,7 @@ const todoListController = require('../controllers/todoListController')
 const friendsListController = require('../controllers/friendsListController')
 const deleteAccountController = require('../controllers/deleteAccountController')
 const appConfig = require("../config/appConfiguration")
+const multer = require('multer')
 
 // Authorization Middlewares
 const authMiddleware = require('../middlewares/authorization')
@@ -23,6 +24,8 @@ let setRouter = (app) => {
     app.get(baseUrl+'/users/allNonFriends', authMiddleware.isUserAuthorized, friendsListController.getAllNonFriends);
 
     app.post(baseUrl+'/users/removeFriend', authMiddleware.isUserAuthorized, friendsListController.removeFriend);
+
+    app.post(baseUrl+'/users/getAvatars', friendsListController.getAvatarsByIDs);
 
 
     /* Routes related to TODO Application */    

@@ -339,11 +339,12 @@ let getAllNonFriends = (req, res) => {
             for (let i = 0; i < allUsers.length; i++) {
                 let tempId = allUsers[i].userId;
                 let tempName = allUsers[i].firstName + " " + allUsers[i].lastName;
+                let avatarPath = allUsers[i].avatarPath;
                 if (tempId !== req.query.userId && util.findObjectByProperty(friends, 'friendId', tempId) === -1) {
                     if (util.findObjectByProperty(sentRequests, 'userId', tempId) === -1)
-                        data.push({ 'userId': tempId, 'userName': tempName, status: 'enabled' });
+                        data.push({ 'userId': tempId, 'userName': tempName, 'avatarPath': avatarPath, status: 'enabled' });
                     else
-                        data.push({ 'userId': tempId, 'userName': tempName, status: 'disabled' });
+                        data.push({ 'userId': tempId, 'userName': tempName, 'avatarPath': avatarPath, status: 'disabled' });
                 }
             }
             let apiResponse = Response.generate(false, 'List of all Users excluding friends', 200, data);
@@ -351,7 +352,7 @@ let getAllNonFriends = (req, res) => {
         })
         .catch((err) => {
             console.log(err)
-            logger.error(err.message, 'userProfileController: getAllNonFriends', 10)
+            logger.error(err.message, 'friendsListController: getAllNonFriends', 10)
             let apiResponse = Response.generate(true, `Error occurred: ${err.message}`, 500, null)
             res.send(apiResponse)
         })
@@ -428,6 +429,41 @@ let removeFriend = (req, res) => {
 
 }  // END removeFriend()
 
+
+let getAvatarsByIDs = (req, res) => {
+    
+    if(!req.body.listOfIDs) {
+         let apiResponse = Response.generate(true, 'Failed to remove !! One or more parameters are missing. ', 400, null);
+        res.send(apiResponse);
+        return; 
+    }
+
+    let listOfIDs = JSON.parse(req.body.listOfIDs);
+    
+     UserModel.find().exec()
+        .then((allUsers) => {
+            let data = [];
+            for (let i = 0; i < allUsers.length; i++) {
+                let tempId = allUsers[i].userId;
+                let tempName = allUsers[i].firstName + " " + allUsers[i].lastName;
+                let avatarPath = allUsers[i].avatarPath;
+                if (util.findObjectByProperty(listOfIDs, 'userId', tempId) !== -1) 
+                    data.push({ 'userId': tempId, 'userName': tempName, 'avatarPath': avatarPath });
+                else if (util.findObjectByProperty(listOfIDs, 'friendId', tempId) !== -1) 
+                    data.push({ 'friendId': tempId, 'friendName': tempName, 'avatarPath': avatarPath });
+            }
+
+            let apiResponse = Response.generate(false, 'List of avatarPaths', 200, data);
+            res.send(apiResponse)
+        })
+        .catch((err) => {
+            console.log(err)
+            logger.error(err.message, 'friendsListController: getAvatarsByIDs', 10)
+            let apiResponse = Response.generate(true, `Error occurred: ${err.message}`, 500, null)
+            res.send(apiResponse)
+        })
+}
+
 module.exports = {
     sendFriendRequest: sendFriendRequest,
     acceptOrRejectRequest: acceptOrRejectRequest,
@@ -435,5 +471,6 @@ module.exports = {
     getAllFriends: getAllFriends,
     getAllNonFriends: getAllNonFriends,
     removeFriendById: removeFriendById,
-    removeFriend: removeFriend
+    removeFriend: removeFriend,
+    getAvatarsByIDs: getAvatarsByIDs
 }

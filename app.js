@@ -11,6 +11,7 @@ const mongoose = require('mongoose')
 // middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/userAvatars', express.static('userAvatars'))
 
 app.use(globalErrorMiddleware.globalErrorHandler)
 
@@ -19,7 +20,7 @@ const models_path = './app/models';
 const routes_path = './app/routes';
 
 app.all('*', function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+  res.setHeader( "Access-Control-Allow-Origin", req.headers.origin );
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
   res.header('Access-Control-Allow-Credentials', true);
@@ -40,8 +41,13 @@ fs.readdirSync(routes_path).forEach(function (file) {
   }
 });
 
+// File Upload
+const file_upload = require('./app/lib/uploadFile');
+file_upload.uploadFile(app);
+
 // Calling global 404 handler after route
 app.use(globalErrorMiddleware.globalNotFoundHandler)
+
 
 /**
  * Create HTTP server.
