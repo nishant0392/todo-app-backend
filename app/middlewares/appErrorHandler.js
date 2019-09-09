@@ -10,6 +10,9 @@ let notFoundHandler = (req, res, next) => {
     // Excluding Socket IO requests
     if (req.url.match(/\/socket.io\/\?/)) return;
     
+     // Excluding upload avatars
+    if (req.url.match(/\/uploadAvatar\/\?/)) return;
+    
     console.log("Global not found handler called for following request URL:");
     console.log(req.url);
     res.status(404).send('Route not found in the application')
