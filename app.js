@@ -83,7 +83,7 @@ function listeningEventHandler() {
   logger.info('HTTP Server listening on port ' + addr.port, 'App.js: listeningEventHandler', 10);
 
   // Creating Database connection
-  mongoose.connect(appConfig.db.uri, { useNewUrlParser: true, useCreateIndex: true });
+  mongoose.connect(appConfig.db.uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 }
 
 
