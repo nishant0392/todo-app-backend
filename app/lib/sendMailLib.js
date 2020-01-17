@@ -12,7 +12,7 @@ async function SendMail(receiver) {
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: "testmail.nishant@gmail.com"  
+      user: "testmail.nishant@gmail.com",  
       pass:  "nick0392" 
     }
   });
